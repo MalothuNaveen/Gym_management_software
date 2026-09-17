@@ -1,0 +1,3 @@
+# Cloudflare Pages / Netlify: this is a single-page app, so every route must
+# fall through to index.html or a refresh on /members/42 would 404.
+/*    /index.html   200

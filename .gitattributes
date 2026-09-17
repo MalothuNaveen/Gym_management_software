@@ -1,0 +1,17 @@
+# Store everything with LF in the repository, whatever the checkout platform
+# does locally. The backend is built into a Linux container: a Dockerfile or
+# shell script committed with CRLF line endings fails there with errors that
+# look nothing like a line-ending problem.
+* text=auto eol=lf
+
+# Binary files must never be touched.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
