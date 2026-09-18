@@ -115,7 +115,7 @@ export function Modal({
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center no-print">
       <div
-        className="overlay-scrim absolute inset-0 bg-ink-900/40 backdrop-blur-[2px]"
+        className="overlay-scrim absolute inset-0 bg-[var(--scrim)] backdrop-blur-[2px]"
         data-state={state}
         onClick={onClose}
         aria-hidden
@@ -126,7 +126,7 @@ export function Modal({
         aria-modal="true"
         aria-label={title}
         data-state={state}
-        className={`overlay-sheet relative flex max-h-[92vh] w-full min-w-0 max-w-full flex-col rounded-t-2xl bg-white shadow-e4 sm:rounded-2xl ${WIDTHS[size]}`}
+        className={`overlay-sheet relative flex max-h-[92vh] w-full min-w-0 max-w-full flex-col rounded-t-2xl bg-surface shadow-e4 sm:rounded-2xl ${WIDTHS[size]}`}
       >
         {/* Grab handle - a familiar signal that the sheet can be dismissed. */}
         <div className="flex justify-center pt-2.5 sm:hidden" aria-hidden>
@@ -175,7 +175,7 @@ export function Drawer({
   return createPortal(
     <div className="fixed inset-0 z-50 no-print">
       <div
-        className="overlay-scrim absolute inset-0 bg-ink-900/40"
+        className="overlay-scrim absolute inset-0 bg-[var(--scrim)]"
         data-state={state}
         onClick={onClose}
         aria-hidden
@@ -187,7 +187,7 @@ export function Drawer({
         aria-label={title}
         data-state={state}
         data-side={side}
-        className={`overlay-drawer absolute inset-y-0 flex w-[82%] max-w-xs flex-col bg-white shadow-e4 ${
+        className={`overlay-drawer absolute inset-y-0 flex w-[82%] max-w-xs flex-col bg-surface shadow-e4 ${
           side === 'left' ? 'left-0' : 'right-0'
         }`}
       >

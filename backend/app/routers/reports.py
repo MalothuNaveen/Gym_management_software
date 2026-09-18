@@ -1,6 +1,6 @@
 """Reports, CSV export and the full backup archive."""
 from calendar import monthrange
-from datetime import date
+from datetime import date, timedelta
 
 from fastapi import APIRouter, Query, Response
 from sqlalchemy import func, select
@@ -8,6 +8,7 @@ from sqlalchemy import func, select
 from app.deps import CurrentUser, DbSession, get_gym_settings, gym_today
 from app.errors import AppError
 from app.models import Attendance, Expense, Member, Membership, Payment
+from app.schemas.messaging import RevenuePoint, RevenueSeriesOut
 from app.schemas.misc import MonthlySummaryOut
 from app.services.exports import DATASETS, build_backup_zip, to_csv
 from app.services.membership import current_membership_subquery
@@ -232,4 +233,90 @@ def download_backup(user: CurrentUser, db: DbSession):
             "Content-Disposition": f'attachment; filename="{name}"',
             "X-Backup-Timezone": settings_row.timezone,
         },
+    )
+
+
+# --------------------------------------------------------------------------
+# Revenue series
+#
+# Feeds the dashboard chart. Bucketing happens in Python rather than in SQL
+# on purpose: date_trunc and strftime differ between PostgreSQL and SQLite,
+# and the whole schema is deliberately portable between the two. The row
+# counts here are a single gym's payments, so this is cheap.
+# --------------------------------------------------------------------------
+@router.get("/revenue-series", response_model=RevenueSeriesOut)
+def revenue_series(user: CurrentUser, db: DbSession,
+                   period: str = Query("daily", pattern="^(daily|weekly|monthly)$")):
+    gym_id = user.gym_id
+    today = gym_today(db, gym_id)
+
+    # Enough history to make the shape meaningful, without a huge payload.
+    if period == "daily":
+        start = today - timedelta(days=29)
+    elif period == "weekly":
+        start = today - timedelta(weeks=11)
+        start -= timedelta(days=start.weekday())      # back to a Monday
+    else:
+        start = (today.replace(day=1) - timedelta(days=334)).replace(day=1)
+
+    def bucket(value: date) -> date:
+        if period == "daily":
+            return value
+        if period == "weekly":
+            return value - timedelta(days=value.weekday())
+        return value.replace(day=1)
+
+    def label(value: date) -> str:
+        if period == "daily":
+            return f"{value.day} {value.strftime('%b')}"
+        if period == "weekly":
+            return f"{value.day} {value.strftime('%b')}"
+        return f"{value.strftime('%b')} {str(value.year)[2:]}"
+
+    income: dict[date, object] = {}
+    expense: dict[date, object] = {}
+
+    for paid_on, amount in db.execute(
+        select(Payment.paid_on, Payment.amount).where(
+            Payment.gym_id == gym_id, Payment.voided_at.is_(None),
+            Payment.paid_on >= start, Payment.paid_on <= today,
+        )
+    ).all():
+        key = bucket(paid_on)
+        income[key] = add(income.get(key, money(0)), money(amount))
+
+    for spent_on, amount in db.execute(
+        select(Expense.expense_date, Expense.amount).where(
+            Expense.gym_id == gym_id,
+            Expense.expense_date >= start, Expense.expense_date <= today,
+        )
+    ).all():
+        key = bucket(spent_on)
+        expense[key] = add(expense.get(key, money(0)), money(amount))
+
+    # Every bucket appears, including the empty ones - a chart with gaps
+    # silently misrepresents a quiet week as a missing one.
+    points = []
+    cursor = bucket(start)
+    while cursor <= today:
+        got_in = income.get(cursor, money(0))
+        got_out = expense.get(cursor, money(0))
+        points.append(RevenuePoint(
+            date=cursor, label=label(cursor),
+            income=got_in, expense=got_out, net=subtract(got_in, got_out),
+        ))
+        if period == "daily":
+            cursor += timedelta(days=1)
+        elif period == "weekly":
+            cursor += timedelta(weeks=1)
+        else:
+            cursor = (cursor.replace(day=28) + timedelta(days=4)).replace(day=1)
+
+    total_in = add(*[p.income for p in points]) if points else money(0)
+    total_out = add(*[p.expense for p in points]) if points else money(0)
+    return RevenueSeriesOut(
+        period=period, start=start, end=today,
+        total_income=total_in, total_expense=total_out,
+        total_net=subtract(total_in, total_out),
+        points=points,
     )

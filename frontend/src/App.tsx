@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button'
 import { Card, LoadingRows } from '@/components/ui/Data'
 import { ApiError } from '@/lib/api'
 import { AuthProvider, useAuth } from '@/lib/auth'
+import { ThemeProvider } from '@/lib/theme'
 import { ToastProvider } from '@/lib/toast'
 import { DashboardPage } from '@/pages/Dashboard'
 import { LoginPage } from '@/pages/Login'
@@ -31,6 +32,8 @@ const ReportsPage = lazy(() =>
   import('@/pages/Reports').then((m) => ({ default: m.ReportsPage })))
 const SettingsPage = lazy(() =>
   import('@/pages/Settings').then((m) => ({ default: m.SettingsPage })))
+const MessagesPage = lazy(() =>
+  import('@/pages/Messages').then((m) => ({ default: m.MessagesPage })))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,6 +55,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
         <ToastProvider>
           <BrowserRouter>
             <AuthProvider>
@@ -59,6 +63,7 @@ export default function App() {
             </AuthProvider>
           </BrowserRouter>
         </ToastProvider>
+        </ThemeProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   )
@@ -102,6 +107,7 @@ function AuthGate() {
           <Route path="staff" element={<StaffPage />} />
           <Route path="expenses" element={<ExpensesPage />} />
           <Route path="reports" element={<ReportsPage />} />
+          <Route path="messages" element={<MessagesPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

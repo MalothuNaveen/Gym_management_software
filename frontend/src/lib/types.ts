@@ -205,8 +205,70 @@ export interface Dashboard {
     month_expenses: string
     month_net: string
   }
-  attendance: { today_count: number; active_members: number }
+  attendance: {
+    today_count: number
+    active_members: number
+    not_checked_in: number
+    percent: number
+  }
   expiring: ExpiringMember[]
+  payment_status: PaymentStatus
+  recent_members: RecentMember[]
+}
+
+export interface PaymentStatus {
+  paid_count: number
+  pending_count: number
+  overdue_count: number
+  paid_amount: string
+  pending_amount: string
+  overdue_amount: string
+}
+
+export interface RecentMember {
+  member_id: number
+  member_code: string
+  full_name: string
+  phone: string
+  has_photo: boolean
+  joined_on: string | null
+  plan_name: string | null
+  status: string
+  end_date: string | null
+  days_remaining: number | null
+}
+
+export interface RevenuePoint {
+  date: string
+  label: string
+  income: string
+  expense: string
+  net: string
+}
+
+export interface RevenueSeries {
+  period: 'daily' | 'weekly' | 'monthly'
+  start: string
+  end: string
+  total_income: string
+  total_expense: string
+  total_net: string
+  points: RevenuePoint[]
+}
+
+export interface MessageRecord {
+  id: number
+  member_id: number | null
+  member_name: string
+  phone: string | null
+  channel: string
+  kind: string
+  status: 'prepared' | 'opened' | 'sent' | 'failed'
+  detail: string | null
+  body: string
+  related_date: string | null
+  sent_at: string | null
+  created_at: string
 }
 
 export interface SalarySummary {

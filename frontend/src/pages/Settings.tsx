@@ -271,7 +271,7 @@ export function SettingsPage() {
         {/* Repeat the save control at the bottom: on a phone the header has
             scrolled well out of sight by the time the form is filled in. */}
         {isAdmin && dirty && (
-          <div className="sticky bottom-20 z-20 rounded-xl border border-ink-200 bg-white/95 p-3 backdrop-blur lg:bottom-4">
+          <div className="sticky bottom-20 z-20 rounded-xl border border-ink-200 bg-surface/90 p-3 backdrop-blur lg:bottom-4">
             <div className="flex gap-3">
               <Button variant="secondary" onClick={() => setForm(null)} className="flex-1">
                 Discard

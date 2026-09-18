@@ -37,7 +37,7 @@ export function SearchInput({
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         aria-label={placeholder}
-        className="h-11 w-full rounded-lg border border-ink-300 bg-white pr-9 pl-9 text-ink-900 placeholder:text-ink-400 transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100 focus:outline-none"
+        className="h-11 w-full rounded-lg border border-ink-300 bg-surface pr-9 pl-9 text-ink-900 placeholder:text-ink-400 transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100 focus:outline-none"
       />
       {value && (
         <button
@@ -79,7 +79,7 @@ export function FilterTabs<T extends string>({
               onClick={() => onChange(option.value)}
               className={`h-9 rounded-md px-3 text-sm font-medium whitespace-nowrap transition ${
                 selected
-                  ? 'bg-white text-ink-900 shadow-xs'
+                  ? 'bg-surface text-ink-900 shadow-xs'
                   : 'text-ink-600 hover:text-ink-900'
               }`}
             >

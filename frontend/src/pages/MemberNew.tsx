@@ -182,7 +182,7 @@ export function MemberNewPage() {
         </Card>
 
         {/* Sticky on phones so Save is always within thumb reach. */}
-        <div className="sticky bottom-16 z-20 -mx-4 border-t border-ink-200 bg-white/95 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-xl sm:border sm:px-4 lg:bottom-0">
+        <div className="sticky bottom-16 z-20 -mx-4 border-t border-ink-200 bg-surface/90 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-xl sm:border sm:px-4 lg:bottom-0">
           <div className="flex gap-3">
             <Button
               variant="secondary"

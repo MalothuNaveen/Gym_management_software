@@ -20,6 +20,9 @@ export type IconName =
   | 'more' | 'camera' | 'share' | 'whatsapp' | 'mail' | 'print' | 'download'
   | 'edit' | 'archive' | 'renew' | 'alert' | 'check' | 'calendar' | 'phone'
   | 'user' | 'receipt' | 'trash' | 'inbox' | 'filter'
+  | 'sun' | 'moon' | 'system' | 'bell' | 'messages' | 'chevron-down'
+  | 'chevron-left' | 'collapse' | 'expand' | 'trend-up' | 'trend-down'
+  | 'clock' | 'sign-out' | 'sparkle' | 'check-circle' | 'x-circle' | 'send'
 
 const PATHS: Record<IconName, ReactNode> = {
   dashboard: <path d="M3 10.4 12 3l9 7.4V20a1 1 0 0 1-1 1h-4.6v-6.2h-4.8V21H4a1 1 0 0 1-1-1z" />,
@@ -197,6 +200,87 @@ const PATHS: Record<IconName, ReactNode> = {
     </>
   ),
   filter: <path d="M3.5 6h17M6.5 12h11M10 18h4" />,
+
+  sun: (
+    <>
+      <circle cx="12" cy="12" r="4.2" />
+      <path d="M12 2.6v2.2M12 19.2v2.2M21.4 12h-2.2M4.8 12H2.6M18.6 5.4l-1.6 1.6M7 17l-1.6 1.6M18.6 18.6L17 17M7 7 5.4 5.4" />
+    </>
+  ),
+  // A crescent, not a circle with a bite: at 20px the bite reads as a blob.
+  moon: <path d="M20.5 14.2A8.6 8.6 0 0 1 9.8 3.5a8.6 8.6 0 1 0 10.7 10.7z" />,
+  system: (
+    <>
+      <rect x="2.6" y="4.4" width="18.8" height="12.4" rx="2" />
+      <path d="M8.6 20.6h6.8M12 16.8v3.8" />
+    </>
+  ),
+  bell: (
+    <>
+      <path d="M18.2 16.2V11a6.2 6.2 0 1 0-12.4 0v5.2L4.2 18.4h15.6z" />
+      <path d="M9.8 21.2a2.4 2.4 0 0 0 4.4 0" />
+    </>
+  ),
+  messages: (
+    <>
+      <path d="M20.6 14.4a2 2 0 0 1-2 2h-9.2L5.4 20.2v-3.8h-1a2 2 0 0 1-2-2V5.8a2 2 0 0 1 2-2h14.2a2 2 0 0 1 2 2z" />
+      <path d="M7.4 8.4h9.2M7.4 11.8h5.6" />
+    </>
+  ),
+  'chevron-down': <path d="m6 9.5 6 6 6-6" />,
+  'chevron-left': <path d="m14.5 6-6 6 6 6" />,
+  collapse: (
+    <>
+      <rect x="3" y="4.2" width="18" height="15.6" rx="2" />
+      <path d="M9.6 4.2v15.6M15.6 9.6l-2.4 2.4 2.4 2.4" />
+    </>
+  ),
+  expand: (
+    <>
+      <rect x="3" y="4.2" width="18" height="15.6" rx="2" />
+      <path d="M9.6 4.2v15.6M13.2 9.6l2.4 2.4-2.4 2.4" />
+    </>
+  ),
+  'trend-up': (
+    <>
+      <path d="m3.5 16.5 5.5-5.6 3.6 3.6 7.9-7.9" />
+      <path d="M15.4 6.6h5.1v5.1" />
+    </>
+  ),
+  'trend-down': (
+    <>
+      <path d="m3.5 7.5 5.5 5.6 3.6-3.6 7.9 7.9" />
+      <path d="M15.4 17.4h5.1v-5.1" />
+    </>
+  ),
+  clock: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 6.8V12l3.4 2" />
+    </>
+  ),
+  'sign-out': (
+    <>
+      <path d="M14.4 3.8H6.6a1.8 1.8 0 0 0-1.8 1.8v12.8a1.8 1.8 0 0 0 1.8 1.8h7.8" />
+      <path d="M17.4 8.4 21 12l-3.6 3.6M21 12H9.6" />
+    </>
+  ),
+  sparkle: (
+    <path d="M12 3.2l1.9 5 5 1.9-5 1.9-1.9 5-1.9-5-5-1.9 5-1.9zM18.6 15.4l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" />
+  ),
+  'check-circle': (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m8.2 12.3 2.6 2.6 5-5.4" />
+    </>
+  ),
+  'x-circle': (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m9.2 9.2 5.6 5.6M14.8 9.2l-5.6 5.6" />
+    </>
+  ),
+  send: <path d="M21 3.4 10.8 13.6M21 3.4l-6.5 17.8-3.7-7.6-7.6-3.7z" />,
 }
 
 interface IconProps {

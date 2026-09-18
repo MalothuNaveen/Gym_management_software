@@ -20,7 +20,7 @@ export function Card({
 }) {
   return (
     <div
-      className={`rounded-xl border border-ink-200 bg-white shadow-e1 ${padded ? 'p-4 sm:p-5' : ''} ${className}`}
+      className={`rounded-xl border border-ink-200 bg-surface shadow-e1 ${padded ? 'p-4 sm:p-5' : ''} ${className}`}
     >
       {children}
     </div>
@@ -91,7 +91,7 @@ export function Stat({
     </>
   )
 
-  const className = 'block rounded-xl border border-ink-200 bg-white p-4 shadow-e1'
+  const className = 'block rounded-xl border border-ink-200 bg-surface p-4 shadow-e1'
 
   if (to) {
     return (
@@ -107,12 +107,15 @@ export function Stat({
 
 type BadgeTone = 'neutral' | 'success' | 'warning' | 'danger' | 'info'
 
+// Tinted with an alpha of the status colour rather than its -50 shade. A fixed
+// light tint stays light in dark mode and glares; a 12% wash of the same hue
+// sits correctly on both a white card and a near-black one.
 const BADGE_TONES: Record<BadgeTone, string> = {
-  neutral: 'bg-ink-100 text-ink-700 ring-ink-200',
-  success: 'bg-emerald-50 text-emerald-800 ring-emerald-200',
-  warning: 'bg-amber-50 text-amber-800 ring-amber-200',
-  danger: 'bg-rose-50 text-rose-800 ring-rose-200',
-  info: 'bg-brand-50 text-brand-700 ring-brand-100',
+  neutral: 'bg-ink-100 text-ink-700 ring-ink-300/60',
+  success: 'bg-emerald-500/12 text-emerald-700 ring-emerald-500/30 dark:text-emerald-400',
+  warning: 'bg-amber-500/14 text-amber-700 ring-amber-500/30 dark:text-amber-400',
+  danger: 'bg-rose-500/12 text-rose-700 ring-rose-500/30 dark:text-rose-400',
+  info: 'bg-brand-500/12 text-brand-700 ring-brand-500/30 dark:text-brand-400',
 }
 
 export function Badge({

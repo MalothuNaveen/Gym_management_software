@@ -11,7 +11,8 @@ from app.db import SessionLocal, engine
 from app.errors import register_error_handlers
 from app.models import Base
 from app.routers import (
-    attendance, auth, dashboard, expenses, members, payments, plans, reports,
+    attendance, auth, dashboard, expenses, members, messages, payments, plans,
+    reports, search,
 )
 from app.routers import settings as settings_router
 from app.routers import staff
@@ -64,7 +65,7 @@ register_error_handlers(app)
 
 API_PREFIX = "/api"
 for module in (auth, dashboard, members, plans, payments, attendance, staff,
-               expenses, reports, settings_router):
+               expenses, reports, messages, search, settings_router):
     app.include_router(module.router, prefix=API_PREFIX)
 
 

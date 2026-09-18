@@ -4,10 +4,14 @@ from app.models.base import Base, TimestampMixin, utcnow
 from app.models.core import Gym, GymSettings, User
 from app.models.finance import Expense, Payment, Receipt
 from app.models.member import Member, Membership, MembershipPlan
+from app.models.messaging import (
+    MESSAGE_CHANNELS, MESSAGE_KINDS, MESSAGE_STATUSES, Message,
+)
 from app.models.staff import Staff, StaffSalaryRecord
 
 __all__ = [
-    "Attendance", "Base", "Expense", "Gym", "GymSettings", "Member",
-    "Membership", "MembershipPlan", "Payment", "Receipt", "Staff",
+    "Attendance", "Base", "Expense", "Gym", "GymSettings", "MESSAGE_CHANNELS",
+    "MESSAGE_KINDS", "MESSAGE_STATUSES", "Member", "Membership",
+    "MembershipPlan", "Message", "Payment", "Receipt", "Staff",
     "StaffSalaryRecord", "TimestampMixin", "User", "utcnow",
 ]

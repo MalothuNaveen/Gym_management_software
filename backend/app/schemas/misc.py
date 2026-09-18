@@ -123,6 +123,34 @@ class DashboardMoney(BaseModel):
 class DashboardAttendance(BaseModel):
     today_count: int
     active_members: int
+    # Derived here so every screen agrees on the same figure.
+    not_checked_in: int = 0
+    percent: int = 0
+
+
+class DashboardPaymentStatus(BaseModel):
+    """Members grouped by where they stand on money, not payments grouped by
+    method - the owner's question is "who owes me", not "how did it arrive"."""
+
+    paid_count: int = 0
+    pending_count: int = 0
+    overdue_count: int = 0
+    paid_amount: Decimal = Decimal("0.00")
+    pending_amount: Decimal = Decimal("0.00")
+    overdue_amount: Decimal = Decimal("0.00")
+
+
+class RecentMemberOut(BaseModel):
+    member_id: int
+    member_code: str
+    full_name: str
+    phone: str
+    has_photo: bool = False
+    joined_on: date | None = None
+    plan_name: str | None = None
+    status: str = "no_membership"
+    end_date: date | None = None
+    days_remaining: int | None = None
 
 
 class ExpiringMemberOut(BaseModel):
@@ -145,6 +173,10 @@ class DashboardOut(BaseModel):
     money: DashboardMoney
     attendance: DashboardAttendance
     expiring: list[ExpiringMemberOut]
+    # Added for the redesigned dashboard. Both default, so any older client
+    # reading this response keeps working exactly as before.
+    payment_status: DashboardPaymentStatus = DashboardPaymentStatus()
+    recent_members: list[RecentMemberOut] = []
 
 
 # --------------------------------------------------------------------------

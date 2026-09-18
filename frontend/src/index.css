@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
+/* Tailwind's `dark:` variant follows prefers-color-scheme by default, but the
+   theme here is an explicit choice written to <html data-theme>. Rebinding the
+   variant means `dark:` and the token overrides below can never disagree. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
 /* ==========================================================================
    Design tokens
 
@@ -7,23 +12,102 @@
    and colour reserved for status. Status is never colour alone - every badge
    carries a word too.
    ========================================================================== */
-@theme {
-  --color-ink-50: #f8fafc;
-  --color-ink-100: #f1f5f9;
-  --color-ink-200: #e2e8f0;
-  --color-ink-300: #cbd5e1;
-  --color-ink-400: #94a3b8;
-  --color-ink-500: #64748b;
-  --color-ink-600: #475569;
-  --color-ink-700: #334155;
-  --color-ink-800: #1e293b;
-  --color-ink-900: #0f172a;
+/* --------------------------------------------------------------------------
+   Light and dark values.
 
-  --color-brand-50: #eef2ff;
-  --color-brand-100: #e0e7ff;
-  --color-brand-500: #4f46e5;
-  --color-brand-600: #4338ca;
-  --color-brand-700: #3730a3;
+   Every colour a component can reach for is declared twice here and nowhere
+   else. The `ink` scale is deliberately *inverted* in dark mode - ink-50 is the
+   quietest surface and ink-900 the loudest text in both themes - so a component
+   written as `bg-ink-50 text-ink-900` is already correct in both without a
+   single `dark:` variant. `data-theme` sits on <html>, which is :root itself,
+   so these overrides resolve in the same scope the tokens are declared in.
+   -------------------------------------------------------------------------- */
+:root {
+  --ink-50: #f8fafc;
+  --ink-100: #f1f5f9;
+  --ink-200: #e2e8f0;
+  --ink-300: #cbd5e1;
+  --ink-400: #94a3b8;
+  --ink-500: #64748b;
+  --ink-600: #475569;
+  --ink-700: #334155;
+  --ink-800: #1e293b;
+  --ink-900: #0f172a;
+
+  /* Raised surfaces: cards, sheets, the top bar. */
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  /* The page behind everything. */
+  --canvas: #f6f8fb;
+  --hairline: #e2e8f0;
+
+  --scrim: rgb(15 23 42 / 0.45);
+  --sweep: rgb(255 255 255 / 0.65);
+
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --ink-50: #131a29;
+  --ink-100: #1a2333;
+  --ink-200: #263146;
+  --ink-300: #3a475f;
+  --ink-400: #64748b;
+  --ink-500: #94a3b8;
+  --ink-600: #b6c2d3;
+  --ink-700: #d3dbe6;
+  --ink-800: #e8edf4;
+  --ink-900: #f8fafc;
+
+  --surface: #111827;
+  --surface-raised: #182238;
+  --canvas: #0b1220;
+  --hairline: #263146;
+
+  --scrim: rgb(2 6 16 / 0.65);
+  --sweep: rgb(255 255 255 / 0.07);
+
+  color-scheme: dark;
+}
+
+@theme {
+  --color-ink-50: var(--ink-50);
+  --color-ink-100: var(--ink-100);
+  --color-ink-200: var(--ink-200);
+  --color-ink-300: var(--ink-300);
+  --color-ink-400: var(--ink-400);
+  --color-ink-500: var(--ink-500);
+  --color-ink-600: var(--ink-600);
+  --color-ink-700: var(--ink-700);
+  --color-ink-800: var(--ink-800);
+  --color-ink-900: var(--ink-900);
+
+  --color-surface: var(--surface);
+  --color-raised: var(--surface-raised);
+  --color-canvas: var(--canvas);
+  --color-hairline: var(--hairline);
+
+  /* Deep navy: the sidebar, and the colour the product is "in". Fixed in both
+     themes - it is the one surface that should not move. */
+  --color-navy-700: #1b2740;
+  --color-navy-800: #131c30;
+  --color-navy-900: #0b1220;
+  --color-navy-950: #060b16;
+
+  /* Electric blue: the single accent. Used for the current thing, the primary
+     action, and the main data series - never for decoration. */
+  --color-brand-50: #eef4ff;
+  --color-brand-100: #dbe6ff;
+  --color-brand-200: #bdd1ff;
+  --color-brand-400: #5b8cff;
+  --color-brand-500: #2f6bff;
+  --color-brand-600: #1d4ed8;
+  --color-brand-700: #1a3faf;
+
+  /* Purple, for secondary actions that must not compete with the primary. */
+  --color-violet-100: #ede9fe;
+  --color-violet-500: #7c5cfc;
+  --color-violet-600: #6538e8;
 
   --font-sans: 'Inter var', 'Inter', -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
@@ -87,6 +171,17 @@
   to   { transform: translate3d(100%, 0, 0); }
 }
 
+/* A chart line drawing itself in, left to right. */
+@keyframes draw {
+  from { stroke-dashoffset: 1000; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@keyframes grow {
+  from { transform: scaleX(0); }
+  to   { transform: none; }
+}
+
 /* ==========================================================================
    Base
    ========================================================================== */
@@ -97,9 +192,17 @@
   }
 
   body {
-    @apply bg-ink-50 text-ink-900 font-sans antialiased;
+    @apply bg-canvas text-ink-900 font-sans antialiased;
     /* Room for the mobile bottom bar plus the iPhone home indicator. */
     padding-bottom: env(safe-area-inset-bottom);
+    /* Switching theme should not look like a page reload. */
+    transition: background-color var(--duration-base) var(--ease-out-quint);
+  }
+
+  /* Headings get slightly tighter tracking than body text: at large sizes the
+     default spacing reads as loose. */
+  h1, h2, h3 {
+    letter-spacing: -0.015em;
   }
 
   /* Inputs must be at least 16px on iOS or Safari zooms the whole page in. */
@@ -221,6 +324,39 @@
   }
   .overlay-drawer[data-state='open'] {
     transform: translate3d(0, 0, 0);
+  }
+
+  /* --- Charts ----------------------------------------------------------
+     The line draws itself in, the area fades up under it, and the bars grow
+     from zero. All three are one property each, and all three are skipped
+     entirely under reduced motion (the component omits the class). */
+  .chart-line {
+    stroke-dasharray: 1000;
+    animation: draw 900ms var(--ease-out-quint) backwards;
+  }
+  .chart-area {
+    animation: fade-in 700ms var(--ease-out-quint) 150ms backwards;
+  }
+  .chart-bar {
+    animation: grow 600ms var(--ease-out-quint) backwards;
+    transform-origin: left center;
+  }
+
+  /* --- Popover ---------------------------------------------------------- */
+  .popover {
+    transform-origin: top var(--popover-origin, right);
+    transition:
+      opacity var(--duration-quick) var(--ease-out-quint),
+      transform var(--duration-quick) var(--ease-out-quint);
+  }
+  .popover[data-state='closed'] {
+    opacity: 0;
+    transform: translate3d(0, -4px, 0) scale(0.97);
+    transition-duration: var(--duration-instant);
+  }
+  .popover[data-state='open'] {
+    opacity: 1;
+    transform: none;
   }
 
   /* --- Toast ------------------------------------------------------------ */

@@ -44,7 +44,7 @@ export function Field({
 }
 
 const CONTROL =
-  'w-full rounded-lg border bg-white px-3 text-ink-900 placeholder:text-ink-400 ' +
+  'w-full rounded-lg border bg-surface px-3 text-ink-900 placeholder:text-ink-400 ' +
   'transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100 focus:outline-none ' +
   'disabled:bg-ink-100 disabled:text-ink-500'
 
